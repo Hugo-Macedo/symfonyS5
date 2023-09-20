@@ -29,7 +29,7 @@ class ProductController extends AbstractController
     #[Route('/product/slug', name: 'app_slug_product')]
     public function slugProducts(Slugify $slugify): Response
     {
-        $texte = $slugify->generateSlug('Ceci est une phrase en français');
+        $texte = $slugify->generateSlug('(Voici une phrase en français)');
         dd($texte);
         return $this->render('product/slugProducts.html.twig', [
         ]);
