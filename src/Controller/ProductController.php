@@ -32,6 +32,7 @@ class ProductController extends AbstractController
         $texte = $slugify->generateSlug('(Voici une phrase en français)');
         dd($texte);
         return $this->render('product/slugProducts.html.twig', [
+            'texte' => $texte,
         ]);
     }
 
