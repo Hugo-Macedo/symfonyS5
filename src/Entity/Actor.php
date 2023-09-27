@@ -7,9 +7,14 @@ use App\Repository\ActorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ActorRepository::class)]
-#[ApiResource()]
+#[ApiResource(
+    normalizationContext: [
+        'groups' => ['actor:read']
+    ]
+)]
 class Actor
 {
     #[ORM\Id]
@@ -18,13 +23,20 @@ class Actor
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['movie:read', 'actor:read'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['movie:read', 'actor:read'])]
     private ?string $lastName = null;
 
     #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actor')]
+    #[Groups(['actor:read'])]
     private Collection $movie;
+
+    #[ORM\ManyToOne(inversedBy: 'actors')]
+    #[Groups(['actor:read'])]
+    private ?Nationality $nationality = null;
 
     public function __construct()
     {
@@ -83,6 +95,18 @@ class Actor
         if ($this->movie->removeElement($movie)) {
             $movie->removeActor($this);
         }
+
+        return $this;
+    }
+
+    public function getNationality(): ?Nationality
+    {
+        return $this->nationality;
+    }
+
+    public function setNationality(?Nationality $nationality): static
+    {
+        $this->nationality = $nationality;
 
         return $this;
     }
