@@ -23,15 +23,16 @@ final class Version20230926070830 extends AbstractMigration
         $this->addSql('CREATE TABLE movie_actor (movie_id INT NOT NULL, actor_id INT NOT NULL, INDEX IDX_3A374C658F93B6FC (movie_id), INDEX IDX_3A374C6510DAF24A (actor_id), PRIMARY KEY(movie_id, actor_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE movie_actor ADD CONSTRAINT FK_3A374C658F93B6FC FOREIGN KEY (movie_id) REFERENCES movie (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE movie_actor ADD CONSTRAINT FK_3A374C6510DAF24A FOREIGN KEY (actor_id) REFERENCES actor (id) ON DELETE CASCADE');
-        $this->addSql('ALTER TABLE movie ADD title VARCHAR(255) DEFAULT NULL, ADD description VARCHAR(255) DEFAULT NULL, ADD release_date VARCHAR(255) DEFAULT NULL, ADD duration VARCHAR(255) DEFAULT NULL, ADD category_name VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE movie ADD title VARCHAR(255) DEFAULT NULL, ADD description VARCHAR(255) DEFAULT NULL, ADD release_date VARCHAR(255) DEFAULT NULL, ADD duration VARCHAR(255) DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE movie_actor DROP FOREIGN KEY FK_3A374C658F93B6FC');
-        $this->addSql('ALTER TABLE movie_actor DROP FOREIGN KEY FK_3A374C6510DAF24A');
-        $this->addSql('DROP TABLE movie_actor');
-        $this->addSql('ALTER TABLE movie DROP title, DROP description, DROP release_date, DROP duration, DROP category_name');
+        // $this->addSql('ALTER TABLE movie_actor DROP FOREIGN KEY FK_3A374C658F93B6FC');
+        // $this->addSql('ALTER TABLE movie_actor DROP FOREIGN KEY FK_3A374C6510DAF24A');
+        // $this->addSql('DROP TABLE movie_actor');
+        // $this->addSql('ALTER TABLE movie DROP title, DROP description, DROP release_date, DROP duration, DROP category_name');
+        $this->addSql('ALTER TABLE movie DROP category_name');
     }
 }

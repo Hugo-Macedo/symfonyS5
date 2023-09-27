@@ -9,7 +9,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: [
+        'groups' => ['movie:read']
+    ])]
 class Movie
 {
     #[ORM\Id]
@@ -18,25 +21,28 @@ class Movie
     private ?int $id = null;
 
     #[ORM\ManyToOne]
+    #[Groups(['movie:read', 'actor:read'])]
     private ?Category $category = null;
 
     #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movie')]
+    #[Groups(['movie:read', 'actor:read'])]
     private Collection $actor;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['movie:read', 'actor:read'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['movie:read', 'actor:read'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['movie:read', 'actor:read'])]
     private ?string $releaseDate = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['movie:read', 'actor:read'])]
     private ?string $duration = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $categoryName = null;
 
     public function __construct()
     {
@@ -128,18 +134,6 @@ class Movie
     public function setDuration(?string $duration): static
     {
         $this->duration = $duration;
-
-        return $this;
-    }
-
-    public function getCategoryName(): ?string
-    {
-        return $this->categoryName;
-    }
-
-    public function setCategoryName(?string $categoryName): static
-    {
-        $this->categoryName = $categoryName;
 
         return $this;
     }
