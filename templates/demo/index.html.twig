@@ -3,6 +3,6 @@
 {% block title %}SymfonyS5{% endblock %}
 
 {% block body %}
-<h1>{{ 'now'   |format_datetime('full', locale='fr') }}</h1>
+<h1>{{ "now" |format_datetime('full', locale='fr', timezone='Europe/Paris') }}</h1>
 
 {% endblock %}
