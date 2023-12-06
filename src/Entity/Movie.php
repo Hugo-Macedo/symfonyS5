@@ -6,7 +6,9 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\MovieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 #[ApiResource(
@@ -20,33 +22,31 @@ class Movie
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne]
-    #[Groups(['movie:read', 'actor:read'])]
+    #[ORM\ManyToOne(inversedBy: 'movies')]
+    #[Groups(['movie:read'])]
     private ?Category $category = null;
 
-    #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movie')]
-    #[Groups(['movie:read', 'actor:read'])]
-    private Collection $actor;
+    #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
+    #[Groups(['movie:read'])]
+    private Collection $actors;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['movie:read', 'actor:read'])]
+    #[ORM\Column(length: 255)]
+    #[Groups(['movie:read'])]
+    #[Assert\NotBlank]
     private ?string $title = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['movie:read', 'actor:read'])]
+    #[Groups(['movie:read'])]
+    #[Assert\Length(min: 2, max: 100, maxMessage: 'Describe the movie in up to 100 characters', minMessage: 'too short')]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['movie:read', 'actor:read'])]
-    private ?string $releaseDate = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['movie:read', 'actor:read'])]
-    private ?string $duration = null;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['movie:read'])]
+    private ?\DateTimeInterface $releaseDate = null;
 
     public function __construct()
     {
-        $this->actor = new ArrayCollection();
+        $this->actors = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -69,15 +69,15 @@ class Movie
     /**
      * @return Collection<int, Actor>
      */
-    public function getActor(): Collection
+    public function getActors(): Collection
     {
-        return $this->actor;
+        return $this->actors;
     }
 
     public function addActor(Actor $actor): static
     {
-        if (!$this->actor->contains($actor)) {
-            $this->actor->add($actor);
+        if (!$this->actors->contains($actor)) {
+            $this->actors->add($actor);
         }
 
         return $this;
@@ -85,7 +85,7 @@ class Movie
 
     public function removeActor(Actor $actor): static
     {
-        $this->actor->removeElement($actor);
+        $this->actors->removeElement($actor);
 
         return $this;
     }
@@ -95,7 +95,7 @@ class Movie
         return $this->title;
     }
 
-    public function setTitle(?string $title): static
+    public function setTitle(string $title): static
     {
         $this->title = $title;
 
@@ -114,12 +114,12 @@ class Movie
         return $this;
     }
 
-    public function getReleaseDate(): ?string
+    public function getReleaseDate(): ?\DateTimeInterface
     {
         return $this->releaseDate;
     }
 
-    public function setReleaseDate(?string $releaseDate): static
+    public function setReleaseDate(\DateTimeInterface $releaseDate): static    
     {
         $this->releaseDate = $releaseDate;
 
