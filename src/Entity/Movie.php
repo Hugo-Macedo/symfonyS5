@@ -9,12 +9,15 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Metadata\ApiFilter;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
-#[ApiResource(
-    normalizationContext: [
-        'groups' => ['movie:read']
-    ])]
+#[ApiResource(normalizationContext: ['groups' => ['movie:read']])]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'description' => 'partial', 'duration' => 'exact'])]
+#[ApiFilter(DateFilter::class, properties: ['releaseDate'])]
 class Movie
 {
     #[ORM\Id]
@@ -28,7 +31,7 @@ class Movie
 
     #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
     #[Groups(['movie:read'])]
-    private Collection $actors;
+    private Collection $actor;
 
     #[ORM\Column(length: 255)]
     #[Groups(['movie:read'])]
@@ -39,6 +42,10 @@ class Movie
     #[Groups(['movie:read'])]
     #[Assert\Length(min: 2, max: 100, maxMessage: 'Describe the movie in up to 100 characters', minMessage: 'too short')]
     private ?string $description = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['movie:read'])]
+    private ?int $duration = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['movie:read'])]
@@ -113,6 +120,7 @@ class Movie
 
         return $this;
     }
+    
 
     public function getReleaseDate(): ?\DateTimeInterface
     {
