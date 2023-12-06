@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ActorRepository::class)]
 #[ApiResource(
@@ -22,17 +23,19 @@ class Actor
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     #[Groups(['movie:read', 'actor:read'])]
+    #[Assert\NotBlank]
     private ?string $firstName = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     #[Groups(['movie:read', 'actor:read'])]
+    #[Assert\NotBlank]
     private ?string $lastName = null;
 
-    #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actor')]
+    #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actors')]
     #[Groups(['actor:read'])]
-    private Collection $movie;
+    private Collection $movies;
 
     #[ORM\ManyToOne(inversedBy: 'actors')]
     #[Groups(['actor:read'])]
@@ -53,7 +56,7 @@ class Actor
         return $this->firstName;
     }
 
-    public function setFirstName(?string $firstName): static
+    public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
 
@@ -65,7 +68,7 @@ class Actor
         return $this->lastName;
     }
 
-    public function setLastName(?string $lastName): static
+    public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
 
@@ -75,24 +78,24 @@ class Actor
     /**
      * @return Collection<int, Movie>
      */
-    public function getMovie(): Collection
+    public function getMovies(): Collection
     {
-        return $this->movie;
+        return $this->movies;
     }
 
-    public function addMovie(Movie $movie): static
+    public function addMovies(Movie $movie): static
     {
-        if (!$this->movie->contains($movie)) {
-            $this->movie->add($movie);
+        if (!$this->movies->contains($movie)) {
+            $this->movies->add($movie);
             $movie->addActor($this);
         }
 
         return $this;
     }
 
-    public function removeMovie(Movie $movie): static
+    public function removeMovies(Movie $movie): static
     {
-        if ($this->movie->removeElement($movie)) {
+        if ($this->movies->removeElement($movie)) {
             $movie->removeActor($this);
         }
 
