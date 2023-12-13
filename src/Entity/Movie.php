@@ -8,6 +8,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
@@ -15,7 +22,18 @@ use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Metadata\ApiFilter;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
-#[ApiResource(normalizationContext: ['groups' => ['movie:read']])]
+#[ApiResource(
+    normalizationContext: ['groups' => ['movie:read']],
+    description: 'A movie with actors.',
+    operations: [
+        new Get(uriTemplate: '/movie/{id}'),
+        new GetCollection(),
+        new Post(),
+        new Put(),
+        new Patch(),
+        new Delete(),
+    ]
+)]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'description' => 'partial', 'duration' => 'exact'])]
 #[ApiFilter(DateFilter::class, properties: ['releaseDate'])]
 class Movie
@@ -23,33 +41,34 @@ class Movie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['movie:read', 'actor:read', 'category:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'movies')]
     #[Groups(['movie:read'])]
     private ?Category $category = null;
 
-    #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
-    #[Groups(['movie:read'])]
-    private Collection $actor;
-
     #[ORM\Column(length: 255)]
-    #[Groups(['movie:read'])]
+    #[Groups(['movie:read', 'actor:read', 'category:read'])]
     #[Assert\NotBlank]
     private ?string $title = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['movie:read'])]
-    #[Assert\Length(min: 2, max: 100, maxMessage: 'Describe the movie in up to 100 characters', minMessage: 'too short')]
+    #[Groups(['movie:read', 'category:read'])]
+    #[Assert\Length(min: 2, max: 255, maxMessage: 'Describe the movie in up to 255 characters', minMessage: 'too short')]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['movie:read'])]
+    #[Groups(['movie:read', 'category:read'])]
     private ?int $duration = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['movie:read'])]
+    #[Groups(['movie:read', 'category:read'])]
     private ?\DateTimeInterface $releaseDate = null;
+
+    #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
+    #[Groups(['movie:read'])]
+    private Collection $actors;
 
     public function __construct()
     {
@@ -73,29 +92,6 @@ class Movie
         return $this;
     }
 
-    /**
-     * @return Collection<int, Actor>
-     */
-    public function getActors(): Collection
-    {
-        return $this->actors;
-    }
-
-    public function addActor(Actor $actor): static
-    {
-        if (!$this->actors->contains($actor)) {
-            $this->actors->add($actor);
-        }
-
-        return $this;
-    }
-
-    public function removeActor(Actor $actor): static
-    {
-        $this->actors->removeElement($actor);
-
-        return $this;
-    }
 
     public function getTitle(): ?string
     {
@@ -142,6 +138,30 @@ class Movie
     public function setDuration(?string $duration): static
     {
         $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, actor>
+     */
+    public function getActors(): Collection
+    {
+        return $this->actors;
+    }
+
+    public function addActor(actor $actor): static
+    {
+        if (!$this->actors->contains($actor)) {
+            $this->actors->add($actor);
+        }
+
+        return $this;
+    }
+
+    public function removeActor(actor $actor): static
+    {
+        $this->actors->removeElement($actor);
 
         return $this;
     }

@@ -24,26 +24,26 @@ class Actor
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['movie:read', 'actor:read'])]
+    #[Groups(['movie:read', 'actor:read', 'category:read'])]
     #[Assert\NotBlank]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['movie:read', 'actor:read'])]
+    #[Groups(['movie:read', 'actor:read', 'category:read'])]
     #[Assert\NotBlank]
     private ?string $lastName = null;
-
-    #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actors')]
-    #[Groups(['actor:read'])]
-    private Collection $movies;
 
     #[ORM\ManyToOne(inversedBy: 'actors')]
     #[Groups(['actor:read'])]
     private ?Nationality $nationality = null;
 
+    #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actors')]
+    #[Groups(['actor:read'])]
+    private Collection $movies;
+
     public function __construct()
     {
-        $this->movie = new ArrayCollection();
+        $this->movies = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -75,32 +75,6 @@ class Actor
         return $this;
     }
 
-    /**
-     * @return Collection<int, Movie>
-     */
-    public function getMovies(): Collection
-    {
-        return $this->movies;
-    }
-
-    public function addMovies(Movie $movie): static
-    {
-        if (!$this->movies->contains($movie)) {
-            $this->movies->add($movie);
-            $movie->addActor($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMovies(Movie $movie): static
-    {
-        if ($this->movies->removeElement($movie)) {
-            $movie->removeActor($this);
-        }
-
-        return $this;
-    }
 
     public function getNationality(): ?Nationality
     {
@@ -110,6 +84,33 @@ class Actor
     public function setNationality(?Nationality $nationality): static
     {
         $this->nationality = $nationality;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Movie>
+     */
+    public function getMovies(): Collection
+    {
+        return $this->movies;
+    }
+
+    public function addMovie(Movie $movie): static
+    {
+        if (!$this->movies->contains($movie)) {
+            $this->movies->add($movie);
+            $movie->addActor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovie(Movie $movie): static
+    {
+        if ($this->movies->removeElement($movie)) {
+            $movie->removeActor($this);
+        }
 
         return $this;
     }
