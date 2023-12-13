@@ -44,7 +44,7 @@ class Movie
     #[Groups(['movie:read', 'actor:read', 'category:read'])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'movies')]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'movies')]
     #[Groups(['movie:read'])]
     private ?Category $category = null;
 
