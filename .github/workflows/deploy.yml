@@ -17,7 +17,7 @@ jobs:
         PORT: ${{ secrets.PORT }}
         KEY: ${{ secrets.SSHKEY }}
         script: |
-          cd public_html/democd/ 
+          cd home/mmi21b13/public_html/democd/ 
           sudo git clone git@github.com:Hugo-Macedo/symfonyS5.git
           cd symfonyS5
           git pull
