@@ -18,7 +18,7 @@ jobs:
         KEY: ${{ secrets.SSHKEY }}
         script: |
           cd ~/public_html/democd
-          git clone git@github.com:Hugo-Macedo/symfonyS5.git
+          sudo git clone git@github.com:Hugo-Macedo/symfonyS5.git
           cd symfonyS5
           git pull
           composer install
