@@ -9,6 +9,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+
+
 
 #[ORM\Entity(repositoryClass: ActorRepository::class)]
 #[ApiResource(
@@ -16,11 +20,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         'groups' => ['actor:read']
     ]
 )]
+#[ApiFilter(OrderFilter::class, properties: ["id"])]
 class Actor
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['actor:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
