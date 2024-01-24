@@ -14,11 +14,13 @@ class MovieFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create();
+        $faker->addProvider(new \Xylis\FakerCinema\Provider\Movie($faker));
 
-        foreach (range(1, 40) as $i) {
+        $movies = $faker->movies(100);
+        foreach ($movies as $item) {
             $movie = new Movie();
             //Generate a title with 3 random words
-            $movie->setTitle($faker->sentence(3)); 
+            $movie->setTitle($item); 
             $movie->setDescription($faker->paragraph);
             // Generate a releaseDate with a DateTime in 21th century
             $movie->setReleaseDate($faker->dateTimeThisCentury);

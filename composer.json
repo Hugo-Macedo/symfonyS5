@@ -44,7 +44,8 @@
         "twig/extra-bundle": "^3.7",
         "twig/intl-extra": "^3.7",
         "twig/twig": "^2.12|^3.0",
-        "webonyx/graphql-php": "^15.6"
+        "webonyx/graphql-php": "^15.6",
+        "xylis/faker-cinema-providers": "^2.0"
     },
     "config": {
         "allow-plugins": {
