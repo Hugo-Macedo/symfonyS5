@@ -36,6 +36,7 @@ use ApiPlatform\Metadata\ApiFilter;
 )]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'description' => 'partial', 'duration' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ["releaseDate" => "DESC"])]
+#[ApiFilter(BooleanFilter::class, properties: ['Online'])]
 class Movie
 {
     #[ORM\Id]
