@@ -17,6 +17,7 @@ use ApiPlatform\Metadata\Delete;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Metadata\ApiFilter;
@@ -34,9 +35,9 @@ use ApiPlatform\Metadata\ApiFilter;
         new Delete(),
     ]
 )]
+#[ApiFilter(BooleanFilter::class, properties: ['online'])]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'description' => 'partial', 'duration' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ["releaseDate" => "DESC"])]
-#[ApiFilter(BooleanFilter::class, properties: ['Online'])]
 class Movie
 {
     #[ORM\Id]
@@ -44,6 +45,10 @@ class Movie
     #[ORM\Column]
     #[Groups(['movie:read', 'actor:read', 'category:read'])]
     private ?int $id = null;
+
+    #[ORM\Column]
+    #[Groups(['movie:read'])]
+    private ?bool $online;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'movies')]
     #[Groups(['movie:read'])]
@@ -79,6 +84,18 @@ class Movie
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function isOnline(): ?bool
+    {
+        return $this->online;
+    }
+
+    public function setOnline(bool $online): static
+    {
+        $this->online = $online;
+
+        return $this;
     }
 
     public function getCategory(): ?Category
