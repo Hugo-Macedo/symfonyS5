@@ -49,7 +49,7 @@ class Movie
     #[ORM\Column]
     #[Groups(['movie:read'])]
     #[Assert\Type('boolean')]
-    private ?boolean $online;
+    private ?bool $online;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'movies')]
     #[Groups(['movie:read'])]
