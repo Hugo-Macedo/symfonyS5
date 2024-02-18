@@ -21,13 +21,15 @@ class MovieFixtures extends Fixture implements DependentFixtureInterface
             $movie = new Movie();
             //Generate a title with 3 random words
             $movie->setTitle($item); 
-            $movie->setDescription($faker->paragraph);
+            $movie->setDescription($faker->text(255));
             // Generate a releaseDate with a DateTime in 21th century
             $movie->setReleaseDate($faker->dateTimeThisCentury);
             // Generate a duration with a random number between 60 and 180
             $movie->setDuration($faker->numberBetween(60, 180));
             $movie->setCategory($this->getReference('category_'.rand(1, 6)));
             $movie->setOnline(true);
+            $movie->setNote($faker->numberBetween(1, 10));
+            $movie->setEntries($faker->numberBetween(10000, 1000000000));
 
             $actors = [];
             foreach (range(1, rand(2, 6)) as $i) {
