@@ -96,6 +96,9 @@ class Movie
     #[Groups(['movie:read'])]
     private ?int $note = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $url = null;
+
     public function __construct()
     {
         $this->actors = new ArrayCollection();
@@ -224,6 +227,18 @@ class Movie
     public function setNote(?int $note): static
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(?string $url): static
+    {
+        $this->url = $url;
 
         return $this;
     }
