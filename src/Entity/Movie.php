@@ -87,7 +87,7 @@ class Movie
     #[Assert\Type('integer')]
     private ?int $duration = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     #[Groups(['movie:read', 'category:read'])]
     #[Assert\DateTime]
     private ?\DateTimeInterface $releaseDate = null;
