@@ -21,8 +21,8 @@ use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Core\Annotation\Security;
 
-#[ORM\Entity(repositoryClass: MovieRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['movie:read']],
     description: 'A movie with actors.',
@@ -35,6 +35,17 @@ use ApiPlatform\Metadata\ApiFilter;
         new Delete(),
     ]
 )]
+#[Get]
+#[Put(security: "is_granted('ROLE_ADMIN')")]
+#[GetCollection]
+#[Post(security: "is_granted('ROLE_ADMIN')")]
+#[Patch(security: "is_granted('ROLE_ADMIN')")]
+#[Delete(security: "is_granted('ROLE_ADMIN')")]
+#[Security("is_granted('ROLE_USER')")]
+
+#[ORM\Entity(repositoryClass: MovieRepository::class)]
+
+
 #[ApiFilter(BooleanFilter::class, properties: ['online'])]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'description' => 'partial', 'id' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ["releaseDate" => "DESC"])]

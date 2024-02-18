@@ -11,15 +11,27 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Core\Annotation\Security;
 
-
-
-#[ORM\Entity(repositoryClass: ActorRepository::class)]
 #[ApiResource(
     normalizationContext: [
         'groups' => ['actor:read']
     ]
 )]
+#[Get]
+#[Put(security: "is_granted('ROLE_ADMIN')")]
+#[GetCollection]
+#[Post(security: "is_granted('ROLE_ADMIN')")]
+#[Patch(security: "is_granted('ROLE_ADMIN')")]
+#[Delete(security: "is_granted('ROLE_ADMIN')")]
+#[Security("is_granted('ROLE_USER')")]
+#[ORM\Entity(repositoryClass: ActorRepository::class)]
 #[ApiFilter(OrderFilter::class, properties: ["id"])]
 class Actor
 {
