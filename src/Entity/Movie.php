@@ -90,7 +90,7 @@ class Movie
     #[ORM\Column(type: 'datetime', nullable: true)]
     #[Groups(['movie:read', 'category:read'])]
     #[Assert\DateTime]
-    private ?\DateTimeInterface $releaseDate = null;
+    private ?DateTimeInterface $releaseDate = null;
 
     #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
     #[Groups(['movie:read'])]
@@ -175,7 +175,7 @@ class Movie
         return $this->releaseDate;
     }
 
-    public function setReleaseDate(\DateTimeInterface $releaseDate): static    
+    public function setReleaseDate(?\DateTimeInterface $releaseDate): static    
     {
         $this->releaseDate = $releaseDate;
 
