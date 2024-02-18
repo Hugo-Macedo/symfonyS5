@@ -36,7 +36,7 @@ use ApiPlatform\Metadata\ApiFilter;
     ]
 )]
 #[ApiFilter(BooleanFilter::class, properties: ['online'])]
-#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'description' => 'partial', 'duration' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'description' => 'partial', 'id' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ["releaseDate" => "DESC"])]
 class Movie
 {
@@ -48,33 +48,53 @@ class Movie
 
     #[ORM\Column]
     #[Groups(['movie:read'])]
-    private ?bool $online;
+    #[Assert\Type('boolean')]
+    private ?boolean $online;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'movies')]
     #[Groups(['movie:read'])]
-    private ?Category $category = null;
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
+    private ?Category $category;
 
     #[ORM\Column(length: 255)]
     #[Groups(['movie:read', 'actor:read', 'category:read'])]
     #[Assert\NotBlank]
-    private ?string $title = null;
+    #[Assert\NotNull]
+    #[Assert\Type('string')]
+    private ?string $title;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['movie:read', 'category:read'])]
+    #[Assert\Type('string')]
+    #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 255, maxMessage: 'Describe the movie in up to 255 characters', minMessage: 'too short')]
-    private ?string $description = null;
+    private ?string $description;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['movie:read', 'category:read'])]
+    #[Assert\Type('integer')]
     private ?int $duration = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['movie:read', 'category:read'])]
+    #[Assert\DateTime]
     private ?\DateTimeInterface $releaseDate = null;
 
     #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
     #[Groups(['movie:read'])]
+    #[Assert\NotBlank]
     private Collection $actors;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(['movie:read'])]
+    #[Assert\Type('integer')]
+    private ?int $entries = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Assert\Type('integer')]
+    #[Groups(['movie:read'])]
+    private ?int $note = null;
 
     public function __construct()
     {
@@ -180,6 +200,30 @@ class Movie
     public function removeActor(actor $actor): static
     {
         $this->actors->removeElement($actor);
+
+        return $this;
+    }
+
+    public function getEntries(): ?int
+    {
+        return $this->entries;
+    }
+
+    public function setEntries(?int $entries): static
+    {
+        $this->entries = $entries;
+
+        return $this;
+    }
+
+    public function getNote(): ?int
+    {
+        return $this->note;
+    }
+
+    public function setNote(?int $note): static
+    {
+        $this->note = $note;
 
         return $this;
     }

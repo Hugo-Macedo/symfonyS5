@@ -26,6 +26,7 @@ class Category
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\NotNull]
     #[Groups(['movie:read', 'category:read'])]
     private ?string $name = null;
 

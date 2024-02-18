@@ -32,16 +32,20 @@ class Actor
     #[ORM\Column(length: 255)]
     #[Groups(['movie:read', 'actor:read', 'category:read'])]
     #[Assert\NotBlank]
-    private ?string $firstName = null;
+    #[Assert\NotNull]
+    private ?string $firstName;
 
     #[ORM\Column(length: 255)]
     #[Groups(['movie:read', 'actor:read', 'category:read'])]
     #[Assert\NotBlank]
-    private ?string $lastName = null;
+    #[Assert\NotNull]
+    private ?string $lastName;
 
     #[ORM\ManyToOne(inversedBy: 'actors')]
     #[Groups(['actor:read'])]
-    private ?Nationality $nationality = null;
+    #[Assert\Type('string')]
+    #[Assert\NotNull]
+    private ?Nationality $nationality;
 
     #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actors')]
     #[Groups(['actor:read'])]
