@@ -76,9 +76,8 @@ class Movie
     #[Assert\Type('integer')]
     private ?int $duration = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['movie:read', 'category:read'])]
-    #[Assert\DateTime]
     private ?\DateTimeInterface $releaseDate = null;
 
     #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
