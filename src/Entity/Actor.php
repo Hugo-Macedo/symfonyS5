@@ -42,7 +42,7 @@ class Actor
     private ?string $lastName;
 
     #[ORM\ManyToOne(inversedBy: 'actors')]
-    #[Groups(['actor:read'])]
+    #[Groups(['actor:read', 'movie:read'])]
     #[Assert\Type('string')]
     #[Assert\NotNull]
     private ?Nationality $nationality;
