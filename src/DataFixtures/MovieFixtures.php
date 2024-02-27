@@ -31,13 +31,9 @@ class MovieFixtures extends Fixture implements DependentFixtureInterface
             $movie->setNote($faker->numberBetween(1, 10));
             $movie->setEntries($faker->numberBetween(10000, 1000000000));
 
-            $actors = [];
             foreach (range(1, rand(2, 6)) as $i) {
-                $actor = $this->getReference('actor_' . rand(1, 20));
-                if (!in_array($actor, $actors)) {
-                    $actors[] = $actor;
-                    $movie->addActor($actor);
-                }
+                $actor = $this->getReference('actor_' . rand(1, 190));
+                $movie->addActor($actor);
             }
 
             $manager->persist($movie);
