@@ -12,7 +12,18 @@ class ActorFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        foreach (range(1, 20) as $i) {
+
+        $faker = Factory::create();
+        $faker->addProvider(new \Xylis\FakerCinema\Provider\Person($faker));
+
+        $actors = $faker->actors($gender = null, $count = 190, $duplicates = false);
+
+        foreach ($actors as $key=>$item) {
+            $fullname = $item; //ex : Christian Bale
+            $fullnameExploded = explode(' ', $fullname);
+            $firstname = $fullnameExploded[0]; //ex : Christian
+            $lastname = $fullnameExploded[1]; //ex : Bale
+
             $actor = new Actor();
             $actor->setFirstName('Actor' . $i);
             $actor->setLastName('Actor' . $i);
@@ -20,8 +31,9 @@ class ActorFixtures extends Fixture implements DependentFixtureInterface
             for ($j = 1; $j <= 10; $j++) {
                 $actor->setNationality($this->getReference('nationality_' . rand(1, 9)));
             }
+
             $manager->persist($actor);
-            $this->addReference('actor_' . $i, $actor);
+            $this->addReference('actor_' . ($key+1), $actor);
         }
 
         $manager->flush();
