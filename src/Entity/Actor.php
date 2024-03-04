@@ -41,7 +41,7 @@ use ApiPlatform\Metadata\Delete;
 #[Delete(security: "is_granted('ROLE_ADMIN')")]
 #[Security("is_granted('ROLE_USER')")]
 #[ORM\Entity(repositoryClass: ActorRepository::class)]
-#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'nationality' => 'partial', 'id' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['lastName' => 'partial', 'id' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ["id"])]
 class Actor
 {
@@ -65,7 +65,6 @@ class Actor
 
     #[ORM\ManyToOne(inversedBy: 'actors')]
     #[Groups(['actor:read'])]
-    #[Assert\Type('string')]
     #[Assert\NotNull]
     private ?Nationality $nationality;
 
