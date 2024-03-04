@@ -21,7 +21,6 @@ use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Metadata\ApiFilter;
-use ApiPlatform\Core\Annotation\Security;
 
 #[ApiResource(
     normalizationContext: ['groups' => ['movie:read']],

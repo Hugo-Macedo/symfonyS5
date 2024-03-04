@@ -15,7 +15,6 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Core\Annotation\Security;
 
 #[ApiResource(
     normalizationContext: [
