@@ -23,10 +23,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new GetCollection(),
-        new Post(processor: UserPasswordHasher::class, validationContext: ['groups' => ['Default', 'user:create']]),
+        new Post(validationContext: ['groups' => ['Default', 'user:create']]),
         new Get(),
-        new Put(processor: UserPasswordHasher::class),
-        new Patch(processor: UserPasswordHasher::class),
+        new Put(),
+        new Patch(
+            routeName: 'patch_user',
+            description: 'Modifie le profil de l\'utilisateur',
+        ),
         new Delete(),
     ],
     normalizationContext: ['groups' => ['user:read']],
