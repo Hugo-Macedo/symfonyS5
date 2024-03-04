@@ -15,10 +15,20 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
 #[ApiResource(
     normalizationContext: [
         'groups' => ['category:read']
+    ],
+    operations: [
+        new Get(uriTemplate: '/category/{id}'),
+        new GetCollection(),
+        new Post(),
+        new Put(),
+        new Patch(),
+        new Delete(),
     ]
 )]
 
@@ -30,6 +40,7 @@ use ApiPlatform\Metadata\Delete;
 #[Delete(security: "is_granted('ROLE_ADMIN')")]
 #[Security("is_granted('ROLE_USER')")]
 
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'partial', 'id' => 'exact'])]
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
 {
